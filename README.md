@@ -4,7 +4,7 @@ Customize Leaflet maps with a linked Google Sheets template or CSV files and Geo
 ![Preview](preview.jpg)
 
 ## Live links (replace with your own)
-- Leaflet Map https://ccrivietnam.github.io/ccri3p/
+- Leaflet Map https://ccrivietnam.github.io/ccriqtstcmt/
 - GGsheet data: https://docs.google.com/spreadsheets/d/1oXsdJFkRTHXGpV5bsHJ0Ls44JSAcCsb-18XH3K_jo-4/edit#gid=0
 - Google Sheets template https://docs.google.com/spreadsheets/d/1ZxvU8eGyuN9M8GxTU9acKVJv70iC3px_m3EVFsOHN9g/edit#gid=0
 
