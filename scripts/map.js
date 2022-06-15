@@ -535,6 +535,11 @@ $(window).on('load', function() {
     var col = allColors[polygon][layer];
     var div = allDivisors[polygon][layer];
 
+    // Custom typeof d to work with case3 (num:text)
+    if (typeof d === "string" && !d.includes(":")) {
+      d = parseFloat(d);
+    }
+
     var i;
 
     if (num) {
@@ -908,6 +913,12 @@ $(window).on('load', function() {
         }
       }
     }
+
+    if (map.getZoom() <= trySetting('_HSTSLabelZoomLevel', 5)) {
+      $('.custom-popup .leaflet-popup-content').hide();
+    } else {
+      $('.custom-popup .leaflet-popup-content').show();
+    }
   }
 
   /**
@@ -934,6 +945,13 @@ $(window).on('load', function() {
     $('.leaflet-control-attribution')[0].innerHTML = credit + attributionHTML;
   }
 
+  /**
+   * Check if the string is a valid URL
+   */
+  function isValidURL(string) {
+    var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+    return (res !== null)
+  };
 
   /**
    * Loads the basemap and adds it to the map
@@ -943,6 +961,44 @@ $(window).on('load', function() {
     L.tileLayer.provider(basemap, {
       maxZoom: 18
     }).addTo(map);
+
+    // Display Hoang Sa Islands and Truong Sa Islands
+    if (trySetting('_displayHSTSLayer', 'on') === 'on') {
+      var HSTSGeoJsonURL = trySetting('_HSTSGeoJsonURL', 'https://raw.githubusercontent.com/ccrivietnam/ccriqtstcmh/main/geodata/hoangsa_truongsa.geojson');
+      // Check if HSTSGeoJsonURL is a valid url, if not get raw content from github repo
+      if (!isValidURL(HSTSGeoJsonURL)) {
+        HSTSGeoJsonURL = 'https://raw.githubusercontent.com/ccrivietnam/ccriqtstcmh/main/' + HSTSGeoJsonURL;
+      }
+      $.getJSON(HSTSGeoJsonURL, function(data){
+        L.geoJson(data, {
+          radius: 4,
+          weight: 2,
+          opacity: 1,
+          color: trySetting('_HSTSLayerColor', '#efe5f7'),
+          fillOpacity: 0.8,
+          fillColor: 'white'
+        }).addTo(map);
+
+        if (trySetting('_displayHSTSLabel', 'on') === 'on') {
+          L.popup({
+            closeOnClick: false,
+            autoClose: false,
+            className: "custom-popup"
+          }).setLatLng([15.896712, 112.525060])
+            .setContent(trySetting('_HSText', 'Quần Đảo<br>Hoàng Sa'))
+            .openOn(map);
+          
+          L.popup({
+              closeOnClick: false,
+              autoClose: false,
+              className: "custom-popup"
+          }).setLatLng([9.487044, 114.350166])
+            .setContent(trySetting('_TSText', 'Quần Đảo<br>Trường Sa'))
+            .openOn(map);
+        }
+      });
+    }
+
     L.control.attribution({
       position: trySetting('_mapAttribution', 'bottomright')
     }).addTo(map);

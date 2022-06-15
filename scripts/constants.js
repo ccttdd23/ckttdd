@@ -59,4 +59,11 @@ var constants = {
   _polygonLabel: 'Show Polygon Labels',
   _polygonLabelZoomLevel: 'Show Polygon Labels at Zoom Level',
   _polygonShowOnStart: 'Show Polygon Data on Start',
+  _displayHSTSLayer: 'HSTS Layer on/off',
+  _HSTSGeoJsonURL: 'HSTS GeoJSON URL',
+  _displayHSTSLabel: 'HSTS Label on/off',
+  _HSTSLayerColor: 'HSTS Layer color',
+  _HSText: 'HS Text',
+  _TSText: 'TS Text',
+  _HSTSLabelZoomLevel: 'HSTS Label Zoom Level'
 };
