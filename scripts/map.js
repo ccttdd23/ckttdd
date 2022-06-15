@@ -540,6 +540,10 @@ $(window).on('load', function() {
     if (num) {
       i = col.length - 1;
       while (d < div[i]) i -= 1;
+    } else if (typeof d === "number" && num === false) {
+      const newDiv = div.map(x =>  parseFloat(x.split(":")[0].trim()));
+      i = col.length - 1;
+      while (d < newDiv[i]) i -= 1;  
     } else {
       for (i = 0; i < col.length - 1; i++) {
         if (d == div[i]) break;
