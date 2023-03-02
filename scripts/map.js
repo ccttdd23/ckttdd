@@ -128,14 +128,7 @@ $(window).on('load', function() {
       var buttons = '';
       if ( point?.actionButtons !== undefined && Array.isArray(point.actionButtons) && point.actionButtons.length > 0 ) {
         point.actionButtons.forEach(btnProps => {
-          buttons += `
-            <button
-              class="btn rta-button ${btnProps?.action?.type || ''}"
-              style="color: ${btnProps?.label_color || '#fff'}; background-color: ${btnProps?.background_color || '#337ab7'}; border-color: ${btnProps?.border_color || '#2e6da4'}; margin-top: 2px;"
-              data-url="${btnProps?.action?.url || ''}"
-            >${btnProps.label}
-            </button>
-          `;
+          buttons += renderButton(btnProps, point)
         });
       }
 
@@ -643,14 +636,7 @@ $(window).on('load', function() {
         }
       }
 
-      info += `
-        <button
-          class="btn rta-button ${btnProps?.action?.type || ''}"
-          style="color: ${btnProps?.label_color || '#fff'}; background-color: ${btnProps?.background_color || '#337ab7'}; border-color: ${btnProps?.border_color || '#2e6da4'}; margin-top: 2px;"
-          data-url="${url}"
-        >${btnProps.label}
-        </button>
-      `;
+      info += renderButton(btnProps, feature.properties);
     }
 
     layer.bindPopup(info);
@@ -694,6 +680,15 @@ $(window).on('load', function() {
     var layers;
     var group = '';
     if (points && points.length > 0) {
+      // Parse point's meta from string to JSON object
+      points.forEach(point => {
+        try {
+          let pointMeta = point?.Point_Meta || '{}';
+          if ( pointMeta ) pointMeta = JSON.parse(pointMeta);
+          point.Point_Meta = pointMeta;
+        } catch (err) {}
+      })
+
       // Before mapping a point on the map, iterate over the points to check if the point shows buttons in its popup.
       let poinButtons = []; // Create an array to store the results
       let deferreds   = []; // Create an array to store the deferred objects returned by $.getJSON
@@ -1052,6 +1047,34 @@ $(window).on('load', function() {
     var res = string.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
     return (res !== null)
   };
+
+  /**
+   * Generate a HTML for button tag
+   */
+  function renderButton(props, meta) {
+    let propsStr = JSON.stringify(props);
+    let matches  = propsStr.match(/##(.*?)##/g);
+
+    if ( matches && Array.isArray(matches) && matches.length > 0 ) {
+      matches.forEach((match) => {
+        var key  = match.replace(/##/g, "");
+        var expr = '$.' + key;
+        var val  = jsonPath(meta, expr);
+        if (val && Array.isArray(val)) propsStr = propsStr.replace(match, val[0]);
+      });
+    }
+
+    props = JSON.parse(propsStr);
+
+    return `
+      <button
+        class="btn rta-button ${props?.action?.type || ''}"
+        style="color: ${props?.label_color || '#fff'}; background-color: ${props?.background_color || '#337ab7'}; border-color: ${props?.border_color || '#2e6da4'}; margin-top: 2px;"
+        data-url="${props?.action?.url || ''}"
+      >${props.label}
+      </button>
+    `;
+  }
 
   /**
    * Loads the basemap and adds it to the map
