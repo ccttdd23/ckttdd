@@ -1,0 +1,42 @@
+[
+    {
+        "label": "Click me 1",
+        "label_color": "#fff",
+        "background_color": "#337ab7",
+        "border_color": "#2e6da4",
+        "action": {
+            "type": "open_new_tab",
+            "url": "https://demo.rta.vn?fkey=##FKEY##&name=##Name##"
+        } 
+    },
+    {
+        "label": "Click me 2",
+        "label_color": "#fff",
+        "background_color": "#1BC5BD",
+        "border_color": "#1BC5BD",
+        "action": {
+            "type": "open_new_tab",
+            "url": "https://google.com"
+        } 
+    },
+    {
+        "label": "Click me 3",
+        "label_color": "#fff",
+        "background_color": "#EE2D41",
+        "border_color": "#EE2D41",
+        "action": {
+            "type": "open_new_tab",
+            "url": "https://rta.rtworkspace.com"
+        } 
+    },
+    {
+        "label": "Click me 4",
+        "label_color": "#fff",
+        "background_color": "#d7dae7",
+        "border_color": "#d7dae7",
+        "action": {
+            "type": "open_new_tab",
+            "url": "https://rta.vn"
+        } 
+    }
+]
