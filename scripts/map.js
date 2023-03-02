@@ -276,8 +276,28 @@ $(window).on('load', function() {
   allPolygonLegends = [];
   allPolygonLayers = [];
   allPopupProperties = [];
+  allPopupActionButtons = [];
   allTextLabelsLayers = [];
   allTextLabels = [];
+
+  /**
+   * Load polygon Geo JSON from setting _polygonsGeojsonURL
+   */
+  function loadPolygonsGeoJson(p) {
+    // Load geojson
+    $.getJSON(getPolygonSetting(p, '_polygonsGeojsonURL').trim(), function(data) {
+        geoJsonLayer = L.geoJson(data, {
+          onEachFeature: onEachFeature,
+          pointToLayer: function(feature, latlng) {
+            return L.circleMarker(latlng, {
+              className: 'geojson-point-marker'
+            });
+          }
+        });
+        allGeojsons.push(geoJsonLayer);
+        loadAllGeojsons(p+1);
+    });
+  }
 
   function loadAllGeojsons(p) {
     if (p < polygonSettings.length && getPolygonSetting(p, '_polygonsGeojsonURL').trim()) {
@@ -287,19 +307,19 @@ $(window).on('load', function() {
       for (i in popupProperties) { popupProperties[i] = popupProperties[i].split(','); }
       allPopupProperties.push(popupProperties);
 
-      // Load geojson
-      $.getJSON(getPolygonSetting(p, '_polygonsGeojsonURL').trim(), function(data) {
-          geoJsonLayer = L.geoJson(data, {
-            onEachFeature: onEachFeature,
-            pointToLayer: function(feature, latlng) {
-              return L.circleMarker(latlng, {
-                className: 'geojson-point-marker'
-              });
-            }
-          });
-          allGeojsons.push(geoJsonLayer);
-          loadAllGeojsons(p+1);
-      });
+      var actionButtonsURL  = getPolygonSetting(p, '_popupActionButtonsURL').trim();
+      if ( actionButtonsURL ) {
+
+        $.getJSON(actionButtonsURL).then(function (data) {
+          allPopupActionButtons.push(data)
+        }).always(function () {
+          loadPolygonsGeoJson(p);
+        })
+
+      } else {
+        loadPolygonsGeoJson(p);
+      }
+
     } else {
       processAllPolygons();
     }
@@ -588,6 +608,42 @@ $(window).on('load', function() {
         info += '<img src="' + feature.properties['img'] + '">';
       }
     }
+
+    buttons = allPopupActionButtons[polygon];
+    for ( i in buttons ) {
+      var btnProps = buttons[i];
+
+      // Skip the button with empty label
+      if ( !btnProps['label'] ) continue;
+
+      // Replace ## in URL if exists
+      var url = btnProps?.action?.url || ''
+      if ( url ) {
+        var matches = url.match(/##(.*?)##/g);
+        if ( matches && Array.isArray(matches) && matches.length > 0 ) {
+          matches.forEach((match) => {
+            var key = match.replace(/##/g, "");
+            var val = feature.properties[key];
+            if (val) url = url.replace(match, val);
+          })
+        }
+      }
+
+      info += `
+        <button
+          class="btn rta-button ${btnProps?.action?.type || ''}"
+          style="color: ${btnProps?.label_color || '#fff'}; background-color: ${btnProps?.background_color || '#337ab7'}; border-color: ${btnProps?.border_color || '#2e6da4'}; margin-top: 2px;"
+          data-url="${url}"
+        >${btnProps.label}
+        </button>
+      `;
+    }
+
+    // Event handler for action buttons
+    $('div').on('click', '.rta-button.open_new_tab', function() {
+      var url = $(this).attr('data-url')
+      if ( url ) window.open(url, '_blank')
+    })
 
     layer.bindPopup(info);
 

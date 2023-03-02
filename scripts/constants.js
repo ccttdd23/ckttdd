@@ -49,6 +49,7 @@ var constants = {
   _polygonsLegendIcon: 'Polygon Legend Icon',
   _polygonsGeojsonURL: 'Polygon GeoJSON URL',
   _popupProp: 'Property Popups, Labels',
+  _popupActionButtonsURL: 'Property Popups Buttons',
   _polygonLayers: 'Polygon Properties, Labels',
   _bucketDivisors: 'Property Ranges',
 	_colorScheme: 'Property Range Color Palette',
