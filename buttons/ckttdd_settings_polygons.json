@@ -1,6 +1,6 @@
 [
     {
-        "label": "Báo website lỗi",
+        "label": "Báo website lỗi: ##Name##",
         "label_color": "#fff",
         "background_color": "#337ab7",
         "border_color": "#2e6da4",
@@ -10,7 +10,7 @@
         } 
     },
     {
-        "label": "Đánh giá website",
+        "label": "Đánh giá website: ##Name##",
         "label_color": "#fff",
         "background_color": "#EE2D41",
         "border_color": "#EE2D41",
