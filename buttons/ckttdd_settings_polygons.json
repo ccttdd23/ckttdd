@@ -16,7 +16,7 @@
         "border_color": "#337ab7",
         "action": {
             "type": "open_new_tab",
-            "url": "https://testcrm.rtworkspace.com/webapp/webform/indexV2?familyId=CEPEW_RATING&province_id=##FKEY##&province_name=##Name##&&theme=tf&tfId=afafc72d4e"
+            "url": "https://testcrm.rtworkspace.com/webapp/webform/indexV2?familyId=CEPEW_RATING&province_id=##FKEY##&province_name=##Name##&theme=tf&tfId=afafc72d4e"
         } 
     }
 ]
