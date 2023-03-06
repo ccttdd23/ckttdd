@@ -850,7 +850,10 @@ $(window).on('load', function() {
     }
 
     // Event handler for action buttons
-    $('div').on('click', '.rta-button.open_new_tab', function() {
+    $('div.leaflet-pane.leaflet-map-pane').off('click._rtaActionButtons').on('click._rtaActionButtons', 'button.rta-button', function(event) {
+      // Prevent event from bubbling up to parent
+      event.stopPropagation();
+      // Event handling
       var url = $(this).attr('data-url')
       if ( url ) window.open(url, '_blank')
     })
